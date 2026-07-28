@@ -10,18 +10,38 @@ import { AssistantDrawer } from './assistant-drawer'
 export function Dashboard() {
   const [assistantOpen, setAssistantOpen] = useState(false)
   const [greeting, setGreeting] = useState('Good morning')
+  const [currentDate, setCurrentDate] = useState('')
   const [profileImg, setProfileImg] = useState<string | null>(null)
 
   useEffect(() => {
-    // 1. Dynamic Greeting based on current time
-    const hour = new Date().getHours()
-    if (hour < 12) setGreeting('Good morning')
-    else if (hour < 18) setGreeting('Good afternoon')
-    else setGreeting('Good evening')
+    // 1. Dynamic Date & Greeting Loader (Runs only on Client)
+    const updateDateTime = () => {
+      const now = new Date()
+      
+      // Dynamic Date Format (e.g. Wednesday, July 29)
+      const formattedDate = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      })
+      setCurrentDate(formattedDate)
+
+      // Dynamic Greeting based on current time
+      const hour = now.getHours()
+      if (hour < 12) setGreeting('Good morning')
+      else if (hour < 18) setGreeting('Good afternoon')
+      else setGreeting('Good evening')
+    }
+
+    updateDateTime()
+    // Auto-check time every 1 minute to transition automatically
+    const timer = setInterval(updateDateTime, 60000)
 
     // 2. Load Saved Profile Image from LocalStorage
     const savedImg = localStorage.getItem('lifeos_profile_pic')
     if (savedImg) setProfileImg(savedImg)
+
+    return () => clearInterval(timer)
   }, [])
 
   // Handle Interactive Profile Photo Upload
@@ -37,12 +57,6 @@ export function Dashboard() {
       reader.readAsDataURL(file)
     }
   }
-
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  })
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -83,7 +97,7 @@ export function Dashboard() {
             <div>
               <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                 <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-                {today}
+                {currentDate || 'Loading date...'}
               </p>
               <h1 className="font-display text-2xl font-bold leading-tight text-balance">
                 {greeting}, Shehani 🌸
