@@ -4,11 +4,15 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    const apiKey =
-      process.env.GROQ_API_KEY ||
-      "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";
+    const apiKey = process.env.GROQ_API_KEY;
 
-    // Format conversation history for Groq Llama-3 API
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "GROQ_API_KEY is missing" },
+        { status: 500 }
+      );
+    }
+
     const formattedMessages = [
       {
         role: "system",
