@@ -29,7 +29,7 @@ export function DailyFocus() {
 
   // Auto Daily Reset Logic
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]; // e.g. "2026-07-28"
+    const today = new Date().toISOString().split("T")[0];
     const lastDate = localStorage.getItem("lifeos_last_date");
 
     const savedPriorities = localStorage.getItem("lifeos_priorities");
@@ -38,23 +38,18 @@ export function DailyFocus() {
     let parsedPriorities: PriorityTask[] = savedPriorities ? JSON.parse(savedPriorities) : [];
     let parsedHabits: Habit[] = savedHabits ? JSON.parse(savedHabits) : habits;
 
-    // Check if a NEW DAY has started
     if (lastDate && lastDate !== today) {
-      // 1. Clear completed priorities for the new day
       parsedPriorities = parsedPriorities.filter((p) => !p.completed);
 
-      // 2. Reset daily habit completion checkboxes (Keep habits & streaks)
       parsedHabits = parsedHabits.map((h) => ({
         ...h,
         completed: false,
       }));
 
-      // Update LocalStorage for the new day
       localStorage.setItem("lifeos_priorities", JSON.stringify(parsedPriorities));
       localStorage.setItem("lifeos_habits", JSON.stringify(parsedHabits));
     }
 
-    // Update state & set current date
     setPriorities(parsedPriorities);
     setHabits(parsedHabits);
     localStorage.setItem("lifeos_last_date", today);
@@ -133,18 +128,18 @@ export function DailyFocus() {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
       {/* Top Priorities Section */}
-      <div className="md:col-span-7 rounded-2xl border border-rose-950/40 bg-zinc-950/80 p-6 shadow-xl backdrop-blur-md">
+      <div className="md:col-span-7 rounded-2xl border border-border bg-card p-6 shadow-xl backdrop-blur-md">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-rose-500/10 p-2 text-rose-400 border border-rose-500/20">
+            <div className="rounded-xl bg-primary/10 p-2 text-primary border border-primary/20">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-zinc-100">Top priorities</h3>
-              <p className="text-xs text-zinc-400">Your must-dos for today</p>
+              <h3 className="font-bold text-foreground">Top priorities</h3>
+              <p className="text-xs text-muted-foreground">Your must-dos for today</p>
             </div>
           </div>
-          <span className="rounded-full bg-rose-950/60 border border-rose-900/40 px-3 py-1 text-xs font-semibold text-rose-300">
+          <span className="rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-semibold text-primary">
             {remainingPriorities} left
           </span>
         </div>
@@ -152,7 +147,7 @@ export function DailyFocus() {
         {/* Priority List */}
         <div className="space-y-3 mb-5">
           {priorities.length === 0 && (
-            <p className="text-xs text-zinc-500 italic py-2">No priorities set for today. Add one below!</p>
+            <p className="text-xs text-muted-foreground italic py-2">No priorities set for today. Add one below!</p>
           )}
           {priorities.map((item) => (
             <div
@@ -160,14 +155,14 @@ export function DailyFocus() {
               onClick={() => togglePriority(item.id)}
               className={`group flex cursor-pointer items-center justify-between rounded-xl border p-4 transition-all ${
                 item.completed
-                  ? "border-zinc-800/60 bg-zinc-900/30 text-zinc-500 line-through"
-                  : "border-zinc-800 bg-zinc-900/60 text-zinc-200 hover:border-rose-900/50"
+                  ? "border-border/50 bg-accent/20 text-muted-foreground line-through"
+                  : "border-border bg-card text-foreground hover:border-primary/50"
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
-                    item.completed ? "border-rose-500 bg-rose-600 text-white" : "border-zinc-700"
+                    item.completed ? "border-primary bg-primary text-primary-foreground" : "border-border"
                   }`}
                 >
                   {item.completed && <Check className="h-3 w-3" />}
@@ -175,12 +170,12 @@ export function DailyFocus() {
                 <span className="text-sm font-medium">{item.title}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="rounded bg-rose-950/40 border border-rose-900/30 px-2 py-0.5 text-[10px] text-rose-300">
+                <span className="rounded bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] text-primary">
                   {item.category}
                 </span>
                 <button
                   onClick={(e) => deletePriority(item.id, e)}
-                  className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 p-1 transition"
+                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1 transition"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -197,12 +192,12 @@ export function DailyFocus() {
             value={newPriority}
             onChange={(e) => setNewPriority(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddPriority()}
-            className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-2.5 text-sm text-zinc-200 focus:border-rose-500 focus:outline-none"
+            className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
           />
           <button
             type="button"
             onClick={handleAddPriority}
-            className="rounded-xl bg-rose-600 px-4 py-2.5 text-white hover:bg-rose-500 transition cursor-pointer active:scale-95"
+            className="rounded-xl bg-primary px-4 py-2.5 text-primary-foreground hover:opacity-90 transition cursor-pointer active:scale-95 shadow-md shadow-primary/20"
           >
             <Plus className="h-5 w-5" />
           </button>
@@ -210,15 +205,15 @@ export function DailyFocus() {
       </div>
 
       {/* Habits Section */}
-      <div className="md:col-span-5 rounded-2xl border border-rose-950/40 bg-zinc-950/80 p-6 shadow-xl backdrop-blur-md">
+      <div className="md:col-span-5 rounded-2xl border border-border bg-card p-6 shadow-xl backdrop-blur-md">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-rose-500/10 p-2 text-rose-400 border border-rose-500/20">
+            <div className="rounded-xl bg-primary/10 p-2 text-primary border border-primary/20">
               <Flame className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-zinc-100">Habits</h3>
-              <p className="text-xs text-zinc-400">
+              <h3 className="font-bold text-foreground">Habits</h3>
+              <p className="text-xs text-muted-foreground">
                 {completedHabitsCount} of {habits.length} done today
               </p>
             </div>
@@ -227,13 +222,13 @@ export function DailyFocus() {
 
         {/* Habits Progress Bar */}
         <div className="mb-5">
-          <div className="flex justify-between text-xs text-zinc-400 mb-1.5 font-mono">
+          <div className="flex justify-between text-xs text-muted-foreground mb-1.5 font-mono">
             <span>Daily progress</span>
-            <span className="text-rose-400 font-semibold">{habitProgressPercent}%</span>
+            <span className="text-primary font-semibold">{habitProgressPercent}%</span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-900">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-accent">
             <div
-              className="h-full bg-rose-500 transition-all duration-300 shadow-sm shadow-rose-500"
+              className="h-full bg-primary transition-all duration-300 shadow-sm shadow-primary/30"
               style={{ width: `${habitProgressPercent}%` }}
             />
           </div>
@@ -247,30 +242,30 @@ export function DailyFocus() {
               onClick={() => toggleHabit(item.id)}
               className={`group flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all ${
                 item.completed
-                  ? "border-rose-950/60 bg-rose-950/20 text-zinc-300"
-                  : "border-zinc-800/80 bg-zinc-900/50 text-zinc-400 hover:border-zinc-700"
+                  ? "border-primary/30 bg-primary/10 text-foreground"
+                  : "border-border bg-card text-muted-foreground hover:border-border/80"
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`flex h-5 w-5 items-center justify-center rounded-full border transition ${
-                    item.completed ? "border-rose-500 bg-rose-600 text-white" : "border-zinc-700"
+                    item.completed ? "border-primary bg-primary text-primary-foreground" : "border-border"
                   }`}
                 >
                   {item.completed && <Check className="h-3 w-3" />}
                 </div>
-                <span className={`text-sm ${item.completed ? "font-semibold text-zinc-100" : ""}`}>
+                <span className={`text-sm ${item.completed ? "font-semibold text-foreground" : ""}`}>
                   {item.title}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-xs font-mono text-rose-400">
-                  <Flame className="h-3.5 w-3.5 fill-rose-500 text-rose-500" />
+                <div className="flex items-center gap-1 text-xs font-mono text-primary">
+                  <Flame className="h-3.5 w-3.5 fill-primary text-primary" />
                   <span>{item.streak}</span>
                 </div>
                 <button
                   onClick={(e) => deleteHabit(item.id, e)}
-                  className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 p-1 transition"
+                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1 transition"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -287,12 +282,12 @@ export function DailyFocus() {
             value={newHabit}
             onChange={(e) => setNewHabit(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddHabit()}
-            className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900/90 px-3.5 py-2 text-xs text-zinc-200 focus:border-rose-500 focus:outline-none"
+            className="flex-1 rounded-xl border border-border bg-background px-3.5 py-2 text-xs text-foreground focus:border-primary focus:outline-none"
           />
           <button
             type="button"
             onClick={handleAddHabit}
-            className="rounded-xl bg-rose-600 px-3 py-2 text-white hover:bg-rose-500 transition cursor-pointer active:scale-95"
+            className="rounded-xl bg-primary px-3 py-2 text-primary-foreground hover:opacity-90 transition cursor-pointer active:scale-95 shadow-md shadow-primary/20"
           >
             <Plus className="h-4 w-4" />
           </button>

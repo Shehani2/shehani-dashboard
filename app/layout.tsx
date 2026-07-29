@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import './globals.css'
+import { ThemeInitializer } from '@/components/theme-initializer'
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -51,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark bg-background ${jakarta.variable} ${inter.variable}`}>
       <body className="antialiased font-sans">
+        <ThemeInitializer />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
