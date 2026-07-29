@@ -35,7 +35,6 @@ export default function SignUpPage() {
 
       if (error) throw error
 
-      // Redirect to dashboard after successful signup
       router.push('/')
       router.refresh()
     } catch (err: any) {
@@ -64,10 +63,9 @@ export default function SignUpPage() {
           </div>
         )}
 
-        {/* Sign Up Form with Autofill Protection */}
+        {/* Sign Up Form */}
         <form onSubmit={handleSignUp} className="flex flex-col gap-4" autoComplete="off">
           
-          {/* Full Name */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Full Name</label>
             <div className="relative flex items-center">
@@ -84,7 +82,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Nickname */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Nickname (App Greeting Name)</label>
             <div className="relative flex items-center">
@@ -101,7 +98,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Occupation */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Role / Occupation</label>
             <div className="relative flex items-center">
@@ -117,7 +113,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Email Address (Protected from Autofill) */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Email Address</label>
             <div className="relative flex items-center">
@@ -135,7 +130,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Password (Protected from Autofill) */}
           <div>
             <label className="text-xs font-semibold text-muted-foreground mb-1 block">Password</label>
             <div className="relative flex items-center">
@@ -152,7 +146,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
